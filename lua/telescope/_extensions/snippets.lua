@@ -8,11 +8,12 @@ if not has_nsip then
   error('This plugins requires norcalli/snippets.nvim')
 end
 
-local actions = require('telescope.actions')
-local finders = require('telescope.finders')
-local pickers = require('telescope.pickers')
-local previewers = require('telescope.previewers')
-local putils = require('telescope.previewers.utils')
+local actions       = require('telescope.actions')
+local action_state  = require('telescope.actions.state')
+local finders       = require('telescope.finders')
+local pickers       = require('telescope.pickers')
+local previewers    = require('telescope.previewers')
+local putils        = require('telescope.previewers.utils')
 local entry_display = require('telescope.pickers.entry_display')
 
 local conf = require('telescope.config').values
@@ -85,8 +86,8 @@ local snippets = function(opts)
     },
     sorter = conf.generic_sorter(opts),
     attach_mappings = function()
-      actions.goto_file_selection_edit:replace(function(prompt_bufnr)
-        local selection = actions.get_selected_entry()
+      actions.select_default:replace(function(prompt_bufnr)
+        local selection = action_state.get_selected_entry()
         actions.close(prompt_bufnr)
         vim.api.nvim_put({ selection.value.name }, '', true, true)
         nsnip.expand_at_cursor()
